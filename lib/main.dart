@@ -29,7 +29,8 @@ class _MyAppState extends State<MyApp> {
     bool whatsapp = await FlutterLaunch.hasApp(name: "whatsapp");
 
     if (whatsapp) {
-      var phone = _countryCode + myController.text;
+      var phone = _countryCode + myController.text.substring(myController.text.length - 9);
+
       await FlutterLaunch.launchWhatsapp(phone: phone, message: "Hello");
     } else {
       setState(() {
