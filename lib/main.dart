@@ -87,29 +87,6 @@ class _MyAppState extends State<MyApp> {
                     },
                   ),
                 ),
-                // Row(
-                //   children: [
-                //     // Expanded(
-                //     //   child: Padding(
-                //     //     padding: const EdgeInsets.only(right: 20.0),
-                //     //     child: TextFormField(
-                //     //       keyboardType: TextInputType.phone,
-                //     //       decoration: const InputDecoration(
-                //     //         hintText: 'Enter Phone Number',
-                //     //         labelText: 'Enter Phone Number',
-                //     //       ),
-                //     //       controller: myController,
-                //     //       validator: (value) {
-                //     //         if (value == null || value.isEmpty) {
-                //     //           return 'Please enter phone number';
-                //     //         }
-                //     //         return null;
-                //     //       },
-                //     //     ),
-                //     //   ),
-                //     // ),
-                //   ],
-                // ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: ElevatedButton(
