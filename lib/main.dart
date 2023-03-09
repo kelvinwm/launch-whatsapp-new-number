@@ -1,6 +1,6 @@
-import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_launch/flutter_launch.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,9 +16,10 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   bool err = false;
   String msgErr = '';
-  String _countryCode = '254';
   final _formKey = GlobalKey<FormState>();
-  final myController = TextEditingController();
+  final TextEditingController controller = TextEditingController();
+  String initialCountry = 'KE';
+  PhoneNumber number = PhoneNumber(isoCode: 'KE');
 
   @override
   void initState() {
@@ -26,22 +27,16 @@ class _MyAppState extends State<MyApp> {
   }
 
   void whatsAppOpen() async {
-    bool whatsapp = await FlutterLaunch.hasApp(name: "whatsapp");
-
-    if (whatsapp) {
-      var phone = _countryCode + myController.text.substring(myController.text.length - 9);
-
-      await FlutterLaunch.launchWhatsapp(phone: phone, message: "Hello");
-    } else {
-      setState(() {
-        err = false;
-        msgErr = '';
-      });
+    FocusManager.instance.primaryFocus?.unfocus();
+    var whatsappUrl = "whatsapp://send?phone=${number.phoneNumber}" "&text=${Uri.encodeComponent("Hello")}";
+    try {
+      final Uri _url = Uri.parse(whatsappUrl);
+      if (!await launchUrl(_url)) {
+        throw Exception('Could not launch $_url');
+      }
+    } catch (e) {
+      print(e);
     }
-  }
-
-  void _onCountryChange(CountryCode countryCode) {
-    _countryCode = countryCode.toString();
   }
 
   @override
@@ -57,58 +52,73 @@ class _MyAppState extends State<MyApp> {
         ),
         body: Form(
           key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(
-                height: 80,
-              ),
-              Row(
-                children: [
-                  CountryCodePicker(
-                    onChanged: _onCountryChange,
-                    // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
-                    initialSelection: 'KE',
-                    // optional. Shows only country name and flag
-                    showCountryOnly: false,
-                    // optional. Shows only country name and flag when popup is closed.
-                    showOnlyCountryWhenClosed: false,
-                    // optional. aligns the flag and the Text left
-                    alignLeft: false,
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 20.0),
-                      child: TextFormField(
-                        keyboardType: TextInputType.phone,
-                        decoration: const InputDecoration(
-                          hintText: 'Enter Phone Number',
-                          labelText: 'Enter Phone Number',
-                        ),
-                        controller: myController,
-                        validator: (value) {
-                          if (value == null || value.isEmpty || value.length < 10) {
-                            return 'Please enter phone number';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      whatsAppOpen();
-                    }
-                  },
-                  child: const Text('Chat On WhatsApp'),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(
+                  height: 80,
                 ),
-              ),
-            ],
+                InternationalPhoneNumberInput(
+                  onInputChanged: (PhoneNumber number) {
+                    this.number = number;
+                    // print(number.phoneNumber);
+                  },
+                  onInputValidated: (bool value) {
+                    print(value);
+                  },
+                  selectorConfig: const SelectorConfig(
+                    selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                  ),
+                  ignoreBlank: false,
+                  autoValidateMode: AutovalidateMode.disabled,
+                  selectorTextStyle: const TextStyle(color: Colors.black),
+                  initialValue: number,
+                  textFieldController: controller,
+                  formatInput: true,
+                  keyboardType: const TextInputType.numberWithOptions(signed: true, decimal: true),
+                  inputBorder: const OutlineInputBorder(),
+                  onSaved: (PhoneNumber number) {
+                    print('On Saved: $number');
+                  },
+                ),
+                // Row(
+                //   children: [
+                //     // Expanded(
+                //     //   child: Padding(
+                //     //     padding: const EdgeInsets.only(right: 20.0),
+                //     //     child: TextFormField(
+                //     //       keyboardType: TextInputType.phone,
+                //     //       decoration: const InputDecoration(
+                //     //         hintText: 'Enter Phone Number',
+                //     //         labelText: 'Enter Phone Number',
+                //     //       ),
+                //     //       controller: myController,
+                //     //       validator: (value) {
+                //     //         if (value == null || value.isEmpty) {
+                //     //           return 'Please enter phone number';
+                //     //         }
+                //     //         return null;
+                //     //       },
+                //     //     ),
+                //     //   ),
+                //     // ),
+                //   ],
+                // ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        whatsAppOpen();
+                      }
+                    },
+                    child: const Text('Chat On WhatsApp'),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
