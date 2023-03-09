@@ -53,7 +53,7 @@ class _MyAppState extends State<MyApp> {
         body: Form(
           key: _formKey,
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(20.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -78,7 +78,7 @@ class _MyAppState extends State<MyApp> {
                   textFieldController: controller,
                   formatInput: true,
                   keyboardType: const TextInputType.numberWithOptions(signed: true, decimal: true),
-                  inputBorder: const OutlineInputBorder(),
+                  // inputBorder: const OutlineInputBorder(),
                   onSaved: (PhoneNumber number) {
                     print('On Saved: $number');
                   },
