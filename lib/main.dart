@@ -60,28 +60,32 @@ class _MyAppState extends State<MyApp> {
                 const SizedBox(
                   height: 80,
                 ),
-                InternationalPhoneNumberInput(
-                  onInputChanged: (PhoneNumber number) {
-                    this.number = number;
-                    // print(number.phoneNumber);
-                  },
-                  onInputValidated: (bool value) {
-                    print(value);
-                  },
-                  selectorConfig: const SelectorConfig(
-                    selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                Container(
+                  color: Colors.black.withOpacity(0.2),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: InternationalPhoneNumberInput(
+                    onInputChanged: (PhoneNumber number) {
+                      this.number = number;
+                      // print(number.phoneNumber);
+                    },
+                    onInputValidated: (bool value) {
+                      print(value);
+                    },
+                    selectorConfig: const SelectorConfig(
+                      selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                    ),
+                    ignoreBlank: false,
+                    autoValidateMode: AutovalidateMode.disabled,
+                    selectorTextStyle: const TextStyle(color: Colors.black),
+                    initialValue: number,
+                    textFieldController: controller,
+                    formatInput: true,
+                    keyboardType: const TextInputType.numberWithOptions(signed: true, decimal: true),
+                    // inputBorder: const OutlineInputBorder(),
+                    onSaved: (PhoneNumber number) {
+                      print('On Saved: $number');
+                    },
                   ),
-                  ignoreBlank: false,
-                  autoValidateMode: AutovalidateMode.disabled,
-                  selectorTextStyle: const TextStyle(color: Colors.black),
-                  initialValue: number,
-                  textFieldController: controller,
-                  formatInput: true,
-                  keyboardType: const TextInputType.numberWithOptions(signed: true, decimal: true),
-                  // inputBorder: const OutlineInputBorder(),
-                  onSaved: (PhoneNumber number) {
-                    print('On Saved: $number');
-                  },
                 ),
                 // Row(
                 //   children: [
